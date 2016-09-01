@@ -1,5 +1,6 @@
-" Vim plugin to fit the Linux kernel coding style and help kernel development
+" Vim plugin to fit the Akaros kernel coding style and help kernel development
 " Maintainer:   Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+" Modified for Akaros: Christopher Koch <chris@kochris.com>
 " License:      Distributed under the same terms as Vim itself.
 "
 " This script is inspired from an article written by Bart:
@@ -13,26 +14,26 @@
 "
 "   let g:linuxsty_patterns = [ "/linux/", "/kernel/" ]
 
-if exists("g:loaded_linuxsty")
+if exists("g:loaded_akarossty")
     finish
 endif
-let g:loaded_linuxsty = 1
+let g:loaded_akarossty = 1
 
 set wildignore+=*.ko,*.mod.c,*.order,modules.builtin
 
-augroup linuxsty
+augroup akarossty
     autocmd!
 
-    autocmd FileType c,cpp call s:LinuxConfigure()
+    autocmd FileType c,cpp call s:AkarosConfigure()
     autocmd FileType diff,kconfig setlocal tabstop=8
 augroup END
 
-function s:LinuxConfigure()
+function s:AkarosConfigure()
     let apply_style = 0
 
-    if exists("g:linuxsty_patterns")
+    if exists("g:akarossty_patterns")
         let path = expand('%:p')
-        for p in g:linuxsty_patterns
+        for p in g:akarossty_patterns
             if path =~ p
                 let apply_style = 1
                 break
@@ -43,22 +44,22 @@ function s:LinuxConfigure()
     endif
 
     if apply_style
-        call s:LinuxCodingStyle()
+        call s:AkarosCodingStyle()
     endif
 endfunction
 
-command! LinuxCodingStyle call s:LinuxCodingStyle()
+command! AkarosCodingStyle call s:AkarosCodingStyle()
 
-function! s:LinuxCodingStyle()
-    call s:LinuxFormatting()
-    call s:LinuxKeywords()
-    call s:LinuxHighlighting()
+function! s:AkarosCodingStyle()
+    call s:AkarosFormatting()
+    call s:AkarosKeywords()
+    call s:AkarosHighlighting()
 endfunction
 
-function s:LinuxFormatting()
-    setlocal tabstop=8
-    setlocal shiftwidth=8
-    setlocal softtabstop=8
+function s:AkarosFormatting()
+    setlocal tabstop=4
+    setlocal shiftwidth=4
+    setlocal softtabstop=4
     setlocal textwidth=80
     setlocal noexpandtab
 
@@ -66,24 +67,24 @@ function s:LinuxFormatting()
     setlocal cinoptions=:0,l1,t0,g0,(0
 endfunction
 
-function s:LinuxKeywords()
+function s:AkarosKeywords()
     syn keyword cOperator likely unlikely
     syn keyword cType u8 u16 u32 u64 s8 s16 s32 s64
     syn keyword cType __u8 __u16 __u32 __u64 __s8 __s16 __s32 __s64
 endfunction
 
-function s:LinuxHighlighting()
-    highlight default link LinuxError ErrorMsg
+function s:AkarosHighlighting()
+    highlight default link AkarosError ErrorMsg
 
-    syn match LinuxError / \+\ze\t/     " spaces before tab
-    syn match LinuxError /\%81v.\+/     " virtual column 81 and more
+    syn match AkarosError / \+\ze\t/     " spaces before tab
+    syn match AkarosError /\%81v.\+/     " virtual column 81 and more
 
     " Highlight trailing whitespace, unless we're in insert mode and the
     " cursor's placed right after the whitespace. This prevents us from having
     " to put up with whitespace being highlighted in the middle of typing
     " something
-    autocmd InsertEnter * match LinuxError /\s\+\%#\@<!$/
-    autocmd InsertLeave * match LinuxError /\s\+$/
+    autocmd InsertEnter * match AkarosError /\s\+\%#\@<!$/
+    autocmd InsertLeave * match AkarosError /\s\+$/
 endfunction
 
 " vim: ts=4 et sw=4
